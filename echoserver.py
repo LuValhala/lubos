@@ -1,4 +1,4 @@
-from flask import Flask, request
+from flask import Flask, request, render_template
 import json
 import requests
 
@@ -8,9 +8,17 @@ app = Flask(__name__)
 # by the Facebook App that will be created.
 PAT = 'EAAI1qYtqvqEBABquYwjOGmg8gZBxDm2mR0s7UE7dHDs9HybbTBgoQkIVZC2IWk6fjURxIZAStfMrsxs7KSKLfv8DG6hmKeruP4KIZAwDMWOKZBeof1gmjMk6ExIbexsE4FTW9oMVh2LVjXFZBuSqn1zDiZBYhcKaPO9uVdfcg9YDQZDZD'
 
-@app.route('/test/', methods=['GET'])
-def test_handle():
-    return "test.html"
+@app.route('/privacy_policy', methods=['GET'])
+def privacy_handle():
+    return render_template("privacyPolicy.html")
+	
+@app.route('/terms_of_service', methods=['GET'])
+def services_handle():
+    return render_template("termsOfService.html")
+	
+@app.route('/home', methods=['GET'])
+def home_handle():
+    return render_template("home.html")
 
 @app.route('/', methods=['GET'])
 def handle_verification():
