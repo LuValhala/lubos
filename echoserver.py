@@ -90,15 +90,6 @@ def loadBoardFullName():
 	listOfBoards = boards.read()
 	return listOfBoards.splitlines()
 
-boardsShortName = loadBoardShortName()
-boardsFullName = loadBoardFullName()
-replyToUser = ""
-
-if __name__ == '__main__':
-  app.run()
-
-
-
 #############################################
 	
 def isCorrectInput(inputFromUser):
@@ -266,3 +257,10 @@ def initializeReply(inputFromUser, userId, isBoardChosen):
 		#return >nice gif
 def reply(s):
 	responseToUser = s
+	
+boardsShortName = loadBoardShortName()
+boardsFullName = loadBoardFullName()
+replyToUser = ""
+
+if __name__ == '__main__':
+  app.run()
