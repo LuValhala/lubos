@@ -5,7 +5,6 @@ import basc_py4chan
 import random
 
 app = Flask(__name__)
-replyToUser = ""
 # This needs to be filled with the Page Access Token that will be provided
 # by the Facebook App that will be created.
 PAT = 'EAAI1qYtqvqEBABquYwjOGmg8gZBxDm2mR0s7UE7dHDs9HybbTBgoQkIVZC2IWk6fjURxIZAStfMrsxs7KSKLfv8DG6hmKeruP4KIZAwDMWOKZBeof1gmjMk6ExIbexsE4FTW9oMVh2LVjXFZBuSqn1zDiZBYhcKaPO9uVdfcg9YDQZDZD'
@@ -37,6 +36,8 @@ def handle_messages():
 	print "Handling Messages"
 	payload = request.get_data()
 	print payload
+	boardsShortName = loadBoardShortName()
+	boardsFullName = loadBoardFullName()
 	for sender, message in messaging_events(payload):
 		print "Incoming from %s: %s" % (sender, message)
 		if initializeReply(message, 1, True):
@@ -71,10 +72,6 @@ def send_message(token, recipient, text):
     headers={'Content-type': 'application/json'})
   if r.status_code != requests.codes.ok:
     print r.text
-
-if __name__ == '__main__':
-  app.run()
-
 ######################################################################
 def initializeBoardData():
 	boards = basc_py4chan.get_all_boards()
@@ -92,6 +89,15 @@ def loadBoardFullName():
 	boards = open("boardsFullName.txt", "r")
 	listOfBoards = boards.read()
 	return listOfBoards.splitlines()
+
+boardsShortName = loadBoardShortName()
+boardsFullName = loadBoardFullName()
+replyToUser = ""
+
+if __name__ == '__main__':
+  app.run()
+
+
 
 #############################################
 	
@@ -227,7 +233,6 @@ def tryToRespondCorrectly(boardName, message):
 	return [fivePosts, replyToUser.encode('utf-8')]##################
 	
 def returnedBoardAndRepliedCorrectly(inputFromUser, userId, isBoardChosen):
-	global responseToUser
 	board = getBoard(inputFromUser, userId, isBoardChosen)
 	if board == "board selection":
 		return True
@@ -239,9 +244,9 @@ def returnedBoardAndRepliedCorrectly(inputFromUser, userId, isBoardChosen):
 		return False
 	print "THE MESSAGE LIST **********"
 	print message
-	responded = tryToRespondCorrectly(board, message)	
+	responded = tryToRespondCorrectly(board, message)
 	if responded:
-		responseToUser=responded
+		responseToUser=responded[1]
 		return True
 	else:
 		return False
@@ -259,9 +264,5 @@ def initializeReply(inputFromUser, userId, isBoardChosen):
 	else:
 		print "should return a gif"
 		#return >nice gif
-	
-global responseToUser
-boardsShortName = loadBoardShortName()
-boardsFullName = loadBoardFullName()
 def reply(s):
 	responseToUser = s
