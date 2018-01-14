@@ -4,7 +4,8 @@ import requests
 import basc_py4chan
 import random
 
-responseToUser = ""
+global responseToUser
+responseToUser = ''
 app = Flask(__name__)
 # This needs to be filled with the Page Access Token that will be provided
 # by the Facebook App that will be created.
@@ -140,8 +141,7 @@ def containsMagicWords(inputFromUser):
 	return False
 		
 def getBoard(inputFromUser, userId, isBoardChosen):
-	global boardsShortName
-	
+	boardsShortName = loadBoardShortName()
 	splittedInput = inputFromUser.split(" ", 1)
 	
 	if splittedInput[0] == "board":
@@ -261,9 +261,12 @@ def initializeReply(inputFromUser, userId, isBoardChosen):
 def reply(s):
 	global responseToUser
 	responseToUser = s
-	
-boardsShortName = loadBoardShortName()
-boardsFullName = loadBoardFullName()
+	return
+
+print responseToUser, "--------"
+inputFromUser1="x spooky scary skellington conspiracy bush trump"
+print initializeReply(inputFromUser1, 1, True)
+print "----------------", responseToUser, "--------"
 
 if __name__ == '__main__':
   app.run()
