@@ -41,10 +41,9 @@ def handle_messages():
 	boardsFullName = loadBoardFullName()
 	for sender, message in messaging_events(payload):
 		print "Incoming from %s: %s" % (sender, message)
-		if initializeReply(message, 1, True):
-			message = responseToUser
-		print "Replying with string: %s" (message)
-		send_message(PAT, sender, message)
+		initializeReply(message, 1, True):
+		print "Replying with string: %s" (responseToUser)
+		send_message(PAT, sender, responseToUser)
 	return "ok"
 
 def messaging_events(payload):
@@ -255,6 +254,7 @@ def initializeReply(inputFromUser, userId, isBoardChosen):
 		return True
 	else:
 		print "should return a gif"
+		return False
 		#return >nice gif
 def reply(s):
 	global responseToUser
