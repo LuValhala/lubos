@@ -3,6 +3,8 @@ import json
 import requests
 import handler
 
+global var = ""
+
 app = Flask(__name__)
 
 # This needs to be filled with the Page Access Token that will be provided

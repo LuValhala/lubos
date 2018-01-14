@@ -191,7 +191,7 @@ def initializeReply(inputFromUser, userId, isBoardChosen):
 boardsShortName = loadBoardShortName()
 boardsFullName = loadBoardFullName()
 def reply(s):
-	print s
+	global var = s
 
 #inputFromUser1="x spooky scary skellington conspiracy bush trump"
 #inputFromUser2="int spooky scary skellington conspiracy bush trump"
