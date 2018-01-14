@@ -44,7 +44,7 @@ def handle_messages():
 		if initializeReply(message, 1, True):
 			message = responseToUser
 		print "Replying with string: %s" (message)
-		send_message(PAT, sender, customReply)
+		send_message(PAT, sender, message)
 	return "ok"
 
 def messaging_events(payload):
