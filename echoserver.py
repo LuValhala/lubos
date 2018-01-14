@@ -41,9 +41,10 @@ def handle_messages():
 	print payload, "payload *****"
 	for sender, message in messaging_events(payload):
 		try:
-			print "Incoming from %s: %s" % (sender, message)
+			#print "Incoming from %s: %s" % (sender, message)
 			initializeReply(message, 1, True)
-			print "Replying with string: %s" (responseToUser)
+			#print "Replying with string: %s" (responseToUser)
+			print "trying to send message)
 			send_message(PAT, sender, responseToUser)
 		except Exception, e:
 			print "some sending error", str(e)
@@ -65,7 +66,7 @@ def messaging_events(payload):
 def send_message(token, recipient, text):
   """Send the message text to recipient with id recipient.
   """
-
+  print "sending message from function"
   r = requests.post("https://graph.facebook.com/v2.6/me/messages",
     params={"access_token": token},
     data=json.dumps({
@@ -74,6 +75,7 @@ def send_message(token, recipient, text):
     }),
     headers={'Content-type': 'application/json'})
   if r.status_code != requests.codes.ok:
+    print "why is this here"
     print r.text
 ######################################################################
 def initializeBoardData():
