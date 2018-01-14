@@ -44,7 +44,7 @@ def handle_messages():
 			#print "Incoming from %s: %s" % (sender, message)
 			initializeReply(message, 1, True)
 			#print "Replying with string: %s" (responseToUser)
-			print "trying to send message)
+			print "trying to send message"
 			send_message(PAT, sender, responseToUser)
 		except Exception, e:
 			print "some sending error", str(e)
