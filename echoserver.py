@@ -1,6 +1,7 @@
 from flask import Flask, request, render_template
 import json
 import requests
+import handler
 
 app = Flask(__name__)
 
@@ -37,7 +38,9 @@ def handle_messages():
   print payload
   for sender, message in messaging_events(payload):
     print "Incoming from %s: %s" % (sender, message)
-    send_message(PAT, sender, message)
+	customReply = initializeReply(message, 1, True)
+	print "Replying with string: %s" (customReply)
+    send_message(PAT, sender, customReply)
   return "ok"
 
 def messaging_events(payload):
