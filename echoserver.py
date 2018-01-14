@@ -4,7 +4,6 @@ import requests
 import basc_py4chan
 import random
 
-global responseToUser
 responseToUser = ''
 app = Flask(__name__)
 app.debug = True
@@ -43,9 +42,12 @@ def handle_messages():
 	for sender, message in messaging_events(payload):
 		try:
 			print "Incoming from %s: %s" % (sender, message)
-			initializeReply(message, sender, True)
-			print "Replying with string: %s" (responseToUser)
-			send_message(PAT, sender, responseToUser)
+			if initializeReply(message, sender, True):
+				print "Replying with string: %s" (responseToUser)
+				send_message(PAT, sender, responseToUser)
+			else:
+				print "I HAVE A PROBLEM WITH REPLYING"
+				print responseToUser
 		except:
 			print "some sending error"
 	return "ok"
