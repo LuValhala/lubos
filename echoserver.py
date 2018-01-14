@@ -264,10 +264,5 @@ def reply(s):
 	responseToUser = s
 	return
 
-print responseToUser, "--------"
-inputFromUser1="x spooky scary skellington conspiracy bush trump"
-print initializeReply(inputFromUser1, 1, True)
-print "----------------", responseToUser, "--------"
-
 if __name__ == '__main__':
   app.run()
