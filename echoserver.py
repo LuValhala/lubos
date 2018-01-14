@@ -35,21 +35,21 @@ def handle_verification():
 
 @app.route('/', methods=['POST'])
 def handle_messages():
-	global responseToUser
 	print "Handling Messages"
+	global responseToUser
 	payload = request.get_data()
-	print payload
+	print payload, "payload *****"
 	for sender, message in messaging_events(payload):
 		try:
 			print "Incoming from %s: %s" % (sender, message)
-			if initializeReply(message, sender, True):
+			if initializeReply(message, 1, True):
 				print "Replying with string: %s" (responseToUser)
 				send_message(PAT, sender, responseToUser)
 			else:
 				print "I HAVE A PROBLEM WITH REPLYING"
 				print responseToUser
-		except:
-			print "some sending error"
+		except Exception, e:
+			print "some sending error", str(e)
 	return "ok"
 
 def messaging_events(payload):
