@@ -3,7 +3,7 @@ import json
 import requests
 import handler
 
-global var = ""
+global responseToUser
 
 app = Flask(__name__)
 
@@ -35,15 +35,16 @@ def handle_verification():
 
 @app.route('/', methods=['POST'])
 def handle_messages():
-  print "Handling Messages"
-  payload = request.get_data()
-  print payload
-  for sender, message in messaging_events(payload):
-    print "Incoming from %s: %s" % (sender, message)
-	customReply = initializeReply(message, 1, True)
-	print "Replying with string: %s" (customReply)
-    send_message(PAT, sender, customReply)
-  return "ok"
+	print "Handling Messages"
+	payload = request.get_data()
+	print payload
+	for sender, message in messaging_events(payload):
+		print "Incoming from %s: %s" % (sender, message)
+		if initializeReply(message, 1, True):
+			message = responseToUser
+		print "Replying with string: %s" (message)
+		send_message(PAT, sender, customReply)
+	return "ok"
 
 def messaging_events(payload):
   """Generate tuples of (sender_id, message_text) from the

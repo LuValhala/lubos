@@ -155,6 +155,7 @@ def tryToRespondCorrectly(boardName, message):
 	return [fivePosts, replyToUser.encode('utf-8')]##################
 	
 def returnedBoardAndRepliedCorrectly(inputFromUser, userId, isBoardChosen):
+	global responseToUser
 	board = getBoard(inputFromUser, userId, isBoardChosen)
 	if board == "board selection":
 		return True
@@ -168,7 +169,7 @@ def returnedBoardAndRepliedCorrectly(inputFromUser, userId, isBoardChosen):
 	print message
 	responded = tryToRespondCorrectly(board, message)	
 	if responded:
-		reply(responded[1])
+		responseToUser=responded
 		return True
 	else:
 		return False
@@ -187,11 +188,11 @@ def initializeReply(inputFromUser, userId, isBoardChosen):
 		print "should return a gif"
 		#return >nice gif
 	
-	
+global responseToUser
 boardsShortName = loadBoardShortName()
 boardsFullName = loadBoardFullName()
 def reply(s):
-	global var = s
+	responseToUser = s
 
 #inputFromUser1="x spooky scary skellington conspiracy bush trump"
 #inputFromUser2="int spooky scary skellington conspiracy bush trump"
