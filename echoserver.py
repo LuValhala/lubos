@@ -7,6 +7,7 @@ import random
 global responseToUser
 responseToUser = ''
 app = Flask(__name__)
+app.debug = True
 # This needs to be filled with the Page Access Token that will be provided
 # by the Facebook App that will be created.
 PAT = 'EAAI1qYtqvqEBABquYwjOGmg8gZBxDm2mR0s7UE7dHDs9HybbTBgoQkIVZC2IWk6fjURxIZAStfMrsxs7KSKLfv8DG6hmKeruP4KIZAwDMWOKZBeof1gmjMk6ExIbexsE4FTW9oMVh2LVjXFZBuSqn1zDiZBYhcKaPO9uVdfcg9YDQZDZD'
