@@ -189,13 +189,12 @@ def getRandomThreadBasedOnSelectedWords(boardName, chosenWords, allThreadsFromCh
 			if thread.topic.text_comment != None:
 				if word in thread.topic.text_comment:
 					topics.append(thread) #thread.text_comment
-	print topics, "**********************" #contains short chosen threads
 	if not topics:
 		return False
 	chosenThreadShort = random.choice(topics)
 	board = basc_py4chan.Board(boardName)
 	chosenThread = board.get_thread(chosenThreadShort.id)
-	print chosenThread
+	print chosenThread, "*********chosenThread*************"
 	return chosenThread
 	
 def tryToRespondCorrectly(boardName, message):
@@ -207,6 +206,7 @@ def tryToRespondCorrectly(boardName, message):
 	#print postsWithIds.values()
 	chosenThread = getRandomThreadBasedOnSelectedWords(boardName, chosenWords, allThreadsFromChosenBoard)
 	if not chosenThread:
+		print "nedostal som chosenThread"
 		return False
 	replyToUser = ""
 	posts = chosenThread.all_posts
@@ -226,6 +226,7 @@ def tryToRespondCorrectly(boardName, message):
 		replyToUser += " says:\n"
 		replyToUser += post.text_comment
 		replyToUser += "\n\n"
+	print "dostal som sa az k vrateniu postov"
 	return [fivePosts, replyToUser.encode('utf-8')]##################
 	
 def returnedBoardAndRepliedCorrectly(inputFromUser, userId, isBoardChosen):
@@ -243,9 +244,11 @@ def returnedBoardAndRepliedCorrectly(inputFromUser, userId, isBoardChosen):
 	responded = tryToRespondCorrectly(board, message)
 	if responded:
 		reply(responded[1])
+		print "i did respond"
 		return True
 	else:
 		return False
+		print "i did not respond"
 
 def initializeReply(inputFromUser, userId, isBoardChosen):
 	if not isCorrectInput(inputFromUser, isBoardChosen):
@@ -254,11 +257,10 @@ def initializeReply(inputFromUser, userId, isBoardChosen):
 	if containsMagicWords(inputFromUser):
 		print "contains magic words"
 		return True
-	#mozno check usera este?
 	if returnedBoardAndRepliedCorrectly(inputFromUser, userId, isBoardChosen):
 		return True
 	else:
-		print "should return a gif"
+		print "I should return a gif"
 		return False
 		#return >nice gif
 def reply(s):
