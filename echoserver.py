@@ -4,6 +4,7 @@ import requests
 import basc_py4chan
 import random
 
+responseToUser = ""
 app = Flask(__name__)
 # This needs to be filled with the Page Access Token that will be provided
 # by the Facebook App that will be created.
@@ -237,7 +238,7 @@ def returnedBoardAndRepliedCorrectly(inputFromUser, userId, isBoardChosen):
 	print message
 	responded = tryToRespondCorrectly(board, message)
 	if responded:
-		responseToUser=responded[1]
+		reply(responded[1])
 		return True
 	else:
 		return False
@@ -256,6 +257,7 @@ def initializeReply(inputFromUser, userId, isBoardChosen):
 		print "should return a gif"
 		#return >nice gif
 def reply(s):
+	global responseToUser
 	responseToUser = s
 	
 boardsShortName = loadBoardShortName()
