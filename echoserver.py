@@ -34,16 +34,18 @@ def handle_verification():
 
 @app.route('/', methods=['POST'])
 def handle_messages():
+	global responseToUser
 	print "Handling Messages"
 	payload = request.get_data()
 	print payload
-	boardsShortName = loadBoardShortName()
-	boardsFullName = loadBoardFullName()
 	for sender, message in messaging_events(payload):
-		print "Incoming from %s: %s" % (sender, message)
-		initializeReply(message, 1, True):
-		print "Replying with string: %s" (responseToUser)
-		send_message(PAT, sender, responseToUser)
+		try:
+			print "Incoming from %s: %s" % (sender, message)
+			initializeReply(message, sender, True)
+			print "Replying with string: %s" (responseToUser)
+			send_message(PAT, sender, responseToUser)
+		except:
+			print "some sending error"
 	return "ok"
 
 def messaging_events(payload):
@@ -92,7 +94,7 @@ def loadBoardFullName():
 
 #############################################
 	
-def isCorrectInput(inputFromUser):
+def isCorrectInput(inputFromUser, isBoardChosen):
 	try:
 		if isinstance(inputFromUser, int) and False == isBoardChosen and inputFromUser != 3:
 			return False
@@ -135,10 +137,10 @@ def containsMagicWords(inputFromUser):
 	if inputFromUser == "cheer":
 		reply("Do your best today! :) I know you can achieve your dreams so good luck with whatever you wish to do. ^^ ")
 		return True
-	else:
-		return False
+	return False
 		
 def getBoard(inputFromUser, userId, isBoardChosen):
+	global boardsShortName
 	
 	splittedInput = inputFromUser.split(" ", 1)
 	
@@ -163,7 +165,7 @@ def getMessage(inputFromUser):
 		message.pop(0)
 		return message
 	except:
-		print "cant get message from input :" + inputFromUser
+		print "cant get message from input: " + inputFromUser
 		return []
 
 def getFiveWordsFromListOfWords(listOfWords):
@@ -243,7 +245,7 @@ def returnedBoardAndRepliedCorrectly(inputFromUser, userId, isBoardChosen):
 		return False
 
 def initializeReply(inputFromUser, userId, isBoardChosen):
-	if not isCorrectInput(inputFromUser):
+	if not isCorrectInput(inputFromUser, isBoardChosen):
 		print "does not have a correct input"
 		return False
 	if containsMagicWords(inputFromUser):
@@ -262,7 +264,6 @@ def reply(s):
 	
 boardsShortName = loadBoardShortName()
 boardsFullName = loadBoardFullName()
-replyToUser = ""
 
 if __name__ == '__main__':
   app.run()
