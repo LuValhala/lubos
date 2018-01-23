@@ -107,6 +107,7 @@ def loadForbiddenWords():
 ######################################################################
 	
 def isCorrectInput(inputFromUser, isBoardChosen):
+	inputFromUser = inputFromUser.lower()
 	try:
 		if isinstance(inputFromUser, int) and False == isBoardChosen and inputFromUser != 3:
 			return False
@@ -119,7 +120,7 @@ def containsMagicWords(inputFromUser):
 	inputFromUser = inputFromUser.lower()
 	if inputFromUser == "gif":
 		url = returnRandomGifUrl()
-		reply("here is a random gif or video for you " + url)
+		reply("here is a totaly random gif or video for you " + url)
 		return True
 	if inputFromUser == "bug":
 		reply("Let me know at lubos.valco@gmail.com with a screenshot and a description of your problem.")
@@ -127,7 +128,7 @@ def containsMagicWords(inputFromUser):
 	if inputFromUser == "help":
 		reply("Hi, this is how to use me: \n" +\
         "1. Short name of the board separated by space 2. Then words as topics you wish to check. \n" +\
-        "For example: int moon sun galaxy \n" +\
+        "For example: o volvo tesla  \n" +\
         "If you can't get an answer: 1. try to include more words as topic. 2. Use the keyword of the board to get anything random. For example: 'o car', 'diy do it yourself', 'vg game'. " +\
         "Or just try again, if it still doesn't work, please, use the bug command. \n" +\
         "Other commands are listed bellow: \n" +\
@@ -149,7 +150,7 @@ def containsMagicWords(inputFromUser):
 		reply(replyString)
 		return True
 	if inputFromUser == "about":
-		reply("I am a bot invented as the last project in the CS50 course from Harward. My creator is Mgr. Lubos Valco from Slovakia. " + \
+		reply("I am a bot invented as the last project in the Harward's CS50 course. My creator is Mgr. Lubos Valco from Slovakia. " + \
 			"Please note that any replied text is only copied from administrated but still anonymous board. The filter is set to send only " +\
 			"worksafe posts but it may still contain informations which anyone may find triggering or disturbing. Proceed with caution. I hope you will " +\
 			"enjoy my work to its fullest potential :) L.")
@@ -319,6 +320,7 @@ def returnedBoardAndRepliedCorrectly(inputFromUser, userId, isBoardChosen):
 		print "i did not respond"
 
 def initializeReply(inputFromUser, userId, isBoardChosen):
+	inputFromUser = inputFromUser.lower()
 	if not isCorrectInput(inputFromUser, isBoardChosen):
 		print "does not have a correct input"
 		return False
