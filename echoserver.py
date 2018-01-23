@@ -98,7 +98,12 @@ def loadBoardFullName():
 	listOfBoards = boards.read()
 	return listOfBoards.splitlines()
 
-#############################################
+def loadForbiddenWords():
+	boards = open("forbidden.txt", "r")
+	listOfBoards = boards.read()
+	return listOfBoards.splitlines()
+	
+######################################################################
 	
 def isCorrectInput(inputFromUser, isBoardChosen):
 	try:
@@ -110,14 +115,26 @@ def isCorrectInput(inputFromUser, isBoardChosen):
 	return True
 	
 def containsMagicWords(inputFromUser):
+	inputFromUser = inputFromUser.lower()
+	if inputFromUser == "gif":
+		url = returnRandomGifUrl()
+		reply("here is a random gif or video for you" + url)
+		return True
+	if inputFromUser == "bug":
+		reply("Let me know at lubos.valco@gmail.com with a screenshot and a description of your problem.")
+		return True
 	if inputFromUser == "help":
 		reply("Hi, this is how to use me: \n" +\
-		"name of the board separated by space and then words as topics you wish to see \n" +\
-		"for example: i moon sun galaxy \n" +\
-		"other commands are listed bellow: \n" +\
-		"boards <- shows you all the Safe for work boards to choose from \n" +\
-		"about <- tells you about me and about the creator of myself \n" +\
-		"cheer <- i will cheer you up!")
+        "1. Short name of the board separated by space 2. Then words as topics you wish to check. \n" +\
+        "For example: int moon sun galaxy \n" +\
+        "If you can't get an answer: 1. try to include more words as topic. 2. Use the keyword of the board to get anything random. For example: 'o car', 'diy do it yourself', 'vg game'. " +\
+        "Or just try again, if it still doesn't work, please, use the bug command. \n" +\
+        "Other commands are listed bellow: \n" +\
+        "boards <- shows you all the 'Safe for work' boards to choose from \n" +\
+        "about <- tells you about me, the bot and about the creator of myself \n" +\
+        "cheer <- I will cheer you up! \n" +\
+        "gif <- I will give you a totaly random .gif or a video! You never know what you receive. ^^ \n" +\
+        "bug <- Found a bug?")
 		return True
 	if inputFromUser == "boards":
 		boardsShortName = loadBoardShortName()
@@ -131,7 +148,6 @@ def containsMagicWords(inputFromUser):
 		reply(replyString)
 		return True
 	if inputFromUser == "about":
-		print "sas"
 		reply("I am a bot invented as the last project in the CS50 course from Harward. My creator is Mgr. Lubos Valco from Slovakia. " + \
 			"Please note that any replied text is only copied from administrated but still anonymous board. The filter is set to send only " +\
 			"worksafe posts but it may still contain informations which anyone may find triggering or disturbing. Proceed with caution. I hope you will " +\
@@ -161,7 +177,6 @@ def getBoard(inputFromUser, userId, isBoardChosen):
 		
 def handleBoardInput(inputFromUser, userId, isBoardChosen):
 #need inmemmory database, if exist, rewrite, otherwise creat db(if db is null) and store, db=[]
-#vola sa to z getBoard()
 	print "as "
 
 def getMessage(inputFromUser):
@@ -196,7 +211,6 @@ def getRandomThreadBasedOnSelectedWords(boardName, chosenWords, allThreadsFromCh
 	chosenThreadShort = random.choice(topics)
 	board = basc_py4chan.Board(boardName)
 	chosenThread = board.get_thread(chosenThreadShort.id)
-	print chosenThread, "*********chosenThread*************"
 	return chosenThread
 	
 def tryToRespondCorrectly(boardName, message):
@@ -208,18 +222,35 @@ def tryToRespondCorrectly(boardName, message):
 	#print postsWithIds.values()
 	chosenThread = getRandomThreadBasedOnSelectedWords(boardName, chosenWords, allThreadsFromChosenBoard)
 	if not chosenThread:
-		print "nedostal som chosenThread"
 		return False
 	replyToUser = ""
 	posts = chosenThread.all_posts
 	fivePosts = []
+	forbiddenWords = loadForbiddenWords()
+	#get five posts that are not rude
 	if len(posts) > 5:
+		counter = 0
 		while len(fivePosts)<5:
+			counter += 1
+			if counter == 200:
+				break
 			post = random.choice(posts)
-			if post not in fivePosts:
-				fivePosts.append(post)
+			print post.text_comment.lower()
+			for forbidden in forbiddenWords:
+				if not forbidden in post.text_comment.lower():
+					if post not in fivePosts:
+						fivePosts.append(post)
 	else:
 		fivePosts = posts
+	
+	if len(fivePosts) > 5:
+		url = returnRandomGifUrl()
+		reply("Something weird happened, here is a gif for you af an apology: " + url)
+		return False
+	
+	replyToUser += "Original poster said: \n"
+	replyToUser += posts[0].text_comment
+	replyToUser += "\n\n"
 	for post in fivePosts:
 		if post.name:
 			replyToUser += post.name
@@ -228,9 +259,31 @@ def tryToRespondCorrectly(boardName, message):
 		replyToUser += " says:\n"
 		replyToUser += post.text_comment
 		replyToUser += "\n\n"
-	print "dostal som sa az k vrateniu postov"
 	return [fivePosts, replyToUser.encode('utf-8')]##################
-	
+
+def returnRandomGifUrl():
+	topics=[]
+	board = basc_py4chan.Board('wsg').get_all_threads()
+	goodGifThreads = ['chill', 'music', 'nostalgia', 'fun', 'ylyl']
+	for word in goodGifThreads:
+		for thread in board:
+			if thread.topic.text_comment != None:
+				if word in thread.topic.text_comment:
+					topics.append(thread)
+	if not topics:
+		reply("I had problems searching for reply, contact the author to fix this, thank you")
+	chosenThreadShort = random.choice(topics)
+	chosenThread = board.get_thread(chosenThreadShort.id)
+	isRandomlyChosen = False
+	for post in chosenThread.all_posts: #randomly skips and if it didnt find anything, take OP
+		if post.is_op:
+			chosenPost = post
+		if 5 == random.randint(0, 5) and not isRandomlyChosen:
+			if post.has_file:
+				chosenPost = post
+	url = basc_py4chan.File(post).file_url
+	return url
+
 def returnedBoardAndRepliedCorrectly(inputFromUser, userId, isBoardChosen):
 	board = getBoard(inputFromUser, userId, isBoardChosen)
 	if board == "board selection":
@@ -262,9 +315,9 @@ def initializeReply(inputFromUser, userId, isBoardChosen):
 	if returnedBoardAndRepliedCorrectly(inputFromUser, userId, isBoardChosen):
 		return True
 	else:
-		print "I should return a gif"
+		url = returnRandomGifUrl
+		reply("Well well, i tried my best but i didn't find a good reply. Here is a gif for you" + url)
 		return False
-		#return >nice gif
 def reply(s):
 	global responseToUser
 	responseToUser = s
