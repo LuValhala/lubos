@@ -262,7 +262,6 @@ def tryToRespondCorrectly(boardName, message):
 	return [fivePosts, replyToUser.encode('utf-8')]##################
 
 def returnRandomGifUrl():
-	print "returning a random gif!!!"
 	topics=[]
 	board = basc_py4chan.Board('wsg').get_all_threads()
 	goodGifThreads = ['chill', 'music', 'nostalgia', 'fun', 'ylyl']
@@ -273,7 +272,9 @@ def returnRandomGifUrl():
 					topics.append(thread)
 	if not topics:
 		reply("I had problems searching for reply, contact the author to fix this, thank you")
+	
 	chosenThreadShort = random.choice(topics)
+	board = basc_py4chan.Board('wsg')
 	chosenThread = board.get_thread(chosenThreadShort.id)
 	isRandomlyChosen = False
 	for post in chosenThread.all_posts: #randomly skips and if it didnt find anything, take OP
@@ -282,9 +283,7 @@ def returnRandomGifUrl():
 		if 5 == random.randint(0, 5) and not isRandomlyChosen:
 			if post.has_file:
 				chosenPost = post
-	print "this is the post "
-	url = basc_py4chan.File(chosenPost).file_url
-	print "this is the URLL ", url 
+	url = chosenPost.file.file_url
 	return url
 
 def returnedBoardAndRepliedCorrectly(inputFromUser, userId, isBoardChosen):
@@ -327,6 +326,11 @@ def reply(s):
 	global responseToUser
 	responseToUser = s
 	return
-
-if __name__ == '__main__':
-  app.run()
+#
+inputFromUser1="x spooky scary skellington conspiracy bush trump"
+#initializeReply(inputFromUser1, 1, True)	
+url = returnRandomGifUrl()
+reply (url)
+print responseToUser
+#if __name__ == '__main__':
+#  app.run()
