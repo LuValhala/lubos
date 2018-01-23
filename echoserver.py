@@ -5,6 +5,7 @@ import basc_py4chan
 import random
 
 responseToUser = ''
+isWorksafe = True
 app = Flask(__name__)
 app.debug = True
 # This needs to be filled with the Page Access Token that will be provided
@@ -118,7 +119,7 @@ def containsMagicWords(inputFromUser):
 	inputFromUser = inputFromUser.lower()
 	if inputFromUser == "gif":
 		url = returnRandomGifUrl()
-		reply("here is a random gif or video for you" + url)
+		reply("here is a random gif or video for you " + url)
 		return True
 	if inputFromUser == "bug":
 		reply("Let me know at lubos.valco@gmail.com with a screenshot and a description of your problem.")
@@ -176,9 +177,9 @@ def getBoard(inputFromUser, userId, isBoardChosen):
 		return False
 		
 def handleBoardInput(inputFromUser, userId, isBoardChosen):
-#need inmemmory database, if exist, rewrite, otherwise creat db(if db is null) and store, db=[]
-	print "as "
-
+#need inmemmory database for ids of users and their boards, if exist, rewrite, otherwise creat db(if db is null) and store, db=[]
+	pass
+	
 def getMessage(inputFromUser):
 	try:
 		message = inputFromUser.split(" ")
@@ -212,6 +213,18 @@ def getRandomThreadBasedOnSelectedWords(boardName, chosenWords, allThreadsFromCh
 	board = basc_py4chan.Board(boardName)
 	chosenThread = board.get_thread(chosenThreadShort.id)
 	return chosenThread
+
+def isPostForbidden(message):
+	global isWorksafe
+	if not isWorksafe:
+		return True
+	allWords = message.split(" ")
+	forbiddenWords = loadForbiddenWords()
+	for forbiddenWord in forbiddenWords:
+		if forbiddenWord in allWords:
+			return True
+	return False
+			
 	
 def tryToRespondCorrectly(boardName, message):
 	allThreadsFromChosenBoard = basc_py4chan.Board(boardName).get_all_threads()
@@ -225,31 +238,29 @@ def tryToRespondCorrectly(boardName, message):
 		return False
 	replyToUser = ""
 	posts = chosenThread.all_posts
+	OP = posts[0].text_comment
 	fivePosts = []
-	forbiddenWords = loadForbiddenWords()
 	#get five posts that are not rude
 	if len(posts) > 5:
 		counter = 0
 		while len(fivePosts)<5:
-			counter += 1
-			if counter == 200:
+			if len(posts) == 0:
 				break
 			post = random.choice(posts)
-			print post.text_comment.lower()
-			for forbidden in forbiddenWords:
-				if not forbidden in post.text_comment.lower():
-					if post not in fivePosts:
-						fivePosts.append(post)
+			if isPostForbidden(post.text_comment):
+				posts.remove(post)
+				continue
+			fivePosts.append(post)
 	else:
 		fivePosts = posts
 	
-	if len(fivePosts) > 5:
+	if len(fivePosts) < 2:
 		url = returnRandomGifUrl()
-		reply("Something weird happened, here is a gif for you af an apology: " + url)
+		reply("Something weird happened, here is a gif for you as an apology: " + url)
 		return False
 	
 	replyToUser += "Original poster said: \n"
-	replyToUser += posts[0].text_comment
+	replyToUser += OP
 	replyToUser += "\n\n"
 	for post in fivePosts:
 		if post.name:
