@@ -326,11 +326,6 @@ def reply(s):
 	global responseToUser
 	responseToUser = s
 	return
-#
-inputFromUser1="x spooky scary skellington conspiracy bush trump"
-#initializeReply(inputFromUser1, 1, True)	
-url = returnRandomGifUrl()
-reply (url)
-print responseToUser
-#if __name__ == '__main__':
-#  app.run()
+
+if __name__ == '__main__':
+  app.run()

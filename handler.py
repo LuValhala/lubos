@@ -20,6 +20,11 @@ def loadBoardFullName():
 	boards = open("boardsFullName.txt", "r")
 	listOfBoards = boards.read()
 	return listOfBoards.splitlines()
+	
+def loadForbiddenWords():
+	boards = open("forbidden.txt", "r")
+	listOfBoards = boards.read()
+	return listOfBoards.splitlines()
 
 ######	
 	
@@ -127,10 +132,9 @@ def getRandomThreadBasedOnSelectedWords(boardName, chosenWords, allThreadsFromCh
 def tryToRespondCorrectly(boardName, message):
 	allThreadsFromChosenBoard = basc_py4chan.Board(boardName).get_all_threads()
 
-	# works print postsWithIds
 	chosenWords = getFiveWordsFromListOfWords(message)
 	print chosenWords
-	#print postsWithIds.values()
+
 	chosenThread = getRandomThreadBasedOnSelectedWords(boardName, chosenWords, allThreadsFromChosenBoard)
 	if not chosenThread:
 		return False
@@ -144,6 +148,9 @@ def tryToRespondCorrectly(boardName, message):
 				fivePosts.append(post)
 	else:
 		fivePosts = posts
+	replyToUser += "Original poster said: "
+	replyToUser += posts[0].text_comment
+	replyToUser += "\n"
 	for post in fivePosts:
 		if post.name:
 			replyToUser += post.name
